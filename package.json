@@ -1,0 +1,55 @@
+{
+  "name": "y-monaco",
+  "version": "0.0.0",
+  "description": "Monaco editor bindings for Yjs",
+  "main": "./dist/y-monaco.js",
+  "module": "./src/y-monaco.js",
+  "sideEffects": false,
+  "scripts": {
+    "dist": "rm -rf dist && rollup -c",
+    "test": "rollup -c && node test/test.node.js",
+    "lint": "standard",
+    "watch": "rollup -wc",
+    "debug": "concurrently 'live-server --port=3443 --entry-file=test.html' 'npm run watch'",
+    "preversion": "npm run lint && npm run dist && npm run test"
+  },
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y-js/y-monaco.git"
+  },
+  "keywords": [
+    "Yjs",
+    "Monaco"
+  ],
+  "author": "Kevin Jahns <kevin.jahns@protonmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/y-js/y-monaco/issues"
+  },
+  "homepage": "https://github.com/y-js/y-monaco#readme",
+  "dependencies": {
+    "lib0": "0.0.5"
+  },
+  "peerDependencies": {
+    "yjs": "13.0.0-83",
+    "y-protocols": ">=0.0.6",
+    "monaco-editor": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.2",
+    "concurrently": "^4.1.0",
+    "jsdom": "^15.1.0",
+    "live-server": "^1.2.1",
+    "monaco-editor": "^0.17.0",
+    "rollup": "^1.10.1",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-postcss": "^2.0.3",
+    "y-protocols": "0.0.6",
+    "yjs": "13.0.0-83"
+  }
+}
