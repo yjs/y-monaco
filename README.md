@@ -42,7 +42,7 @@ const binding = new MonacoBinding(type, editor.getModel(), new Set([editor]), pr
 
 <dl>
   <b><code>constructor(Y.Text, monaco.editor.ITextModel, [Set&lt;monaco.editor.IStandaloneCodeEditor&gt;, [Awareness]])</code></b>
-  <dd>If you specify the editor, MonacoBinding will adjust selections when remote changes happen. Awareness is an implementation of the awareness protocol of y-protocols/awareness. If you specify Awareness, MonacoBinding will render remote selections.</dd>
+  <dd>If the editor(s) are specified, MonacoBinding adjusts selections when remote changes happen. <code>Awareness</code> is an implementation of the awareness protocol of <code>y-protocols/awareness</code>. If Awareness is specified, MonacoBinding renders remote selections.</dd>
   <b><code>destroy()</code></b>
   <dd>Unregister all event listeners. This is automatically called when the model is disposed.</dd>
 </dl>

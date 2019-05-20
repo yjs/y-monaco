@@ -35,7 +35,7 @@
     "lib0": "0.0.5"
   },
   "peerDependencies": {
-    "yjs": "13.0.0-83",
+    "yjs": ">=13.0.0-83",
     "y-protocols": ">=0.0.6",
     "monaco-editor": "*"
   },
