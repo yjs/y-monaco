@@ -40,7 +40,7 @@ const debugResolve = {
     if (importee === 'monaco-editor') {
       return `${process.cwd()}/node_modules/monaco-editor/esm/vs/editor/editor.api.js`
     }
-    return null 
+    return null
   }
 }
 

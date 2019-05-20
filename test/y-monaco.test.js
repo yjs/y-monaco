@@ -15,7 +15,7 @@ import * as monaco from 'monaco-editor'
  */
 
 /**
- * @param {Y.Doc} y 
+ * @param {Y.Doc} y
  * @return {EditorSetup}
  */
 const createMonacoEditor = y => {
@@ -33,12 +33,12 @@ const createTestSetup = () => {
   const doc = new Y.Doc()
   return {
     s1: createMonacoEditor(doc),
-    s2: createMonacoEditor(doc)    
+    s2: createMonacoEditor(doc)
   }
 }
 
 /**
- * @param {t.TestCase} tc 
+ * @param {t.TestCase} tc
  */
 export const testMonacoInsert = tc => {
   const { s1, s2 } = createTestSetup()
@@ -51,7 +51,7 @@ export const testMonacoInsert = tc => {
 }
 
 /**
- * @param {t.TestCase} tc 
+ * @param {t.TestCase} tc
  */
 export const testMonacoConcurrentInsert = tc => {
   const { s1, s2 } = createTestSetup()
@@ -65,7 +65,7 @@ export const testMonacoConcurrentInsert = tc => {
 }
 
 /**
- * @param {t.TestCase} tc 
+ * @param {t.TestCase} tc
  */
 export const testMonacoManyEditOps = tc => {
   const { s1, s2 } = createTestSetup()
@@ -90,7 +90,7 @@ const createRangeFromIndex = (model, from, to) => {
 }
 
 /**
- * @param {t.TestCase} tc 
+ * @param {t.TestCase} tc
  */
 export const testMonacoManyEdits = tc => {
   const { s1, s2 } = createTestSetup()

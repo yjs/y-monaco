@@ -1,7 +1,7 @@
 # y-monaco
 > [Monaco](https://microsoft.github.io/monaco-editor/index.html) Editor Binding for [Yjs](https://github.com/y-js/yjs) - [Demo](https://yjs-demos.now.sh/monaco/)
 
-This binding maps a Y.Text to a Monaco editor.
+This binding maps a Y.Text to the Monaco editor (the editor that power VS Code).
 
 ### Features
 
@@ -20,15 +20,32 @@ const provider = new WebsocketProvider(`${location.protocol === 'http:' ? 'ws:' 
 const type = ydocument.getText('monaco')
 
 const editor = monaco.editor.create(document.getElementById('monaco-editor'), {
-  value: '',
+  value: '', // MonacoBinding overwrites this value with the content of type
   language: "javascript"
 })
 
 // Bind Yjs to the editor model
-const monacoBinding = new MonacoBinding(type, editor.getModel())
+const monacoBinding = new MonacoBinding(type, editor.getModel(), new Set([editor]), provider.awareness)
 ```
 
 Also look [here](https://github.com/y-js/yjs-demos/tree/master/monaco) for a working example.
+
+## API
+
+```js
+import { MonacoBinding } from 'y-monaco'
+
+const binding = new MonacoBinding(type, editor.getModel(), new Set([editor]), provider.awareness)
+```
+
+### Class:MonacoBinding
+
+<dl>
+  <b><code>constructor(Y.Text, monaco.editor.ITextModel, [Set&lt;monaco.editor.IStandaloneCodeEditor&gt;, [Awareness]])</code></b>
+  <dd>If you specify the editor, MonacoBinding will adjust selections when remote changes happen. Awareness is an implementation of the awareness protocol of y-protocols/awareness. If you specify Awareness, MonacoBinding will render remote selections.</dd>
+  <b><code>destroy()</code></b>
+  <dd>Unregister all event listeners. This is automatically called when the model is disposed.</dd>
+</dl>
 
 ### License
 
