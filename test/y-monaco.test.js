@@ -71,9 +71,9 @@ export const testMonacoManyEditOps = tc => {
   const { s1, s2 } = createTestSetup()
   const pos = s1.model.getPositionAt(0)
   const range = new monaco.Selection(pos.lineNumber, pos.column, pos.lineNumber, pos.column)
-  s1.model.pushEditOperations([], [{ range, text: 'A' }, { range, text: 'b' }], () => null)
+  s1.model.pushEditOperations([], [{ range, text: 'A' }, { range, text: 'bc' }], () => null)
   s2.model.pushEditOperations([], [{ range, text: 'B' }], () => null)
-  t.assert(s1.model.getValue().length === 3)
+  t.assert(s1.model.getValue().length === 4)
   t.assert(s1.type.toString() === s1.model.getValue())
   t.assert(s2.model.getValue() === s1.model.getValue())
 }
@@ -96,10 +96,25 @@ export const testMonacoManyEdits = tc => {
   const { s1, s2 } = createTestSetup()
   const range = createRangeFromIndex(s1.model, 0, 0)
   s1.model.pushEditOperations([], [{ range, text: 'A' }, { range, text: 'b' }], () => null)
-  s2.model.pushEditOperations([], [{ range, text: 'B' }], () => null)
-  s2.model.pushEditOperations([], [{ range: createRangeFromIndex(s2.model, 1, 3), text: 'Z' }], () => null)
+  s2.model.pushEditOperations([], [{ range, text: 'B123456789' }], () => null)
+  s2.model.pushEditOperations([], [{ range: createRangeFromIndex(s2.model, 1, 3), text: 'Z' }, { range: createRangeFromIndex(s2.model, 4, 5), text: 'K' }], () => null)
   t.assert(s1.type.toString() === s1.model.getValue())
   t.assert(s2.model.getValue() === s1.model.getValue())
+}
+
+/**
+ * @param {t.TestCase} tc
+ */
+export const testMonacoManyYEdits = tc => {
+  const { s1, s2 } = createTestSetup()
+  s1.type.insert(0, 'abcde')
+  s1.binding.doc.transact(() => {
+    s1.type.insert(1, '1')
+    s1.type.insert(3, '3')
+  })
+  t.assert(s1.type.toString() === s1.model.getValue())
+  t.assert(s2.model.getValue() === s1.model.getValue())
+  t.assert(s1.model.getValue() === 'a1b3cde')
 }
 
 let charCounter = 0
