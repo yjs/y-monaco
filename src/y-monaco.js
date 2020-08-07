@@ -83,7 +83,7 @@ export class MonacoBinding {
         })
       })
     }
-    this.doc.on('beforeTransaction', this._beforeTransaction)
+    this.doc.on('beforeAllTransactions', this._beforeTransaction)
     this._decorations = new Map()
     this._rerenderDecorations = () => {
       editors.forEach(editor => {
@@ -198,6 +198,7 @@ export class MonacoBinding {
       this.awareness = awareness
     }
   }
+
   destroy () {
     this._monacoChangeHandler.dispose()
     this.ytext.unobserve(this._ytextObserver)

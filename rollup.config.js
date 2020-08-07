@@ -1,5 +1,5 @@
-import nodeResolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 import postcss from 'rollup-plugin-postcss'
 import fs from 'fs'
 import path from 'path'
@@ -30,6 +30,9 @@ const debugResolve = {
     }
     if (importee === 'yjs') {
       return `${process.cwd()}/../yjs/src/index.js`
+    }
+    if (importee === 'y-monaco') {
+      return `${process.cwd()}/src/y-monaco.js`
     }
     if (customModules.has(importee.split('/')[0])) {
       return `${process.cwd()}/../${importee}/src/${importee}.js`
@@ -63,13 +66,30 @@ export default [{
   input: './test/index.js',
   output: {
     name: 'test',
+    file: 'dist/test.cjs',
+    format: 'cjs',
+    sourcemap: true
+  },
+  plugins: [
+    debugResolve,
+    postcss({
+      plugins: [],
+      extract: true
+    })
+  ]
+}, {
+  input: './test/index.js',
+  output: {
+    name: 'test',
     file: 'dist/test.js',
     format: 'iife',
     sourcemap: true
   },
   plugins: [
     debugResolve,
-    nodeResolve(),
+    nodeResolve({
+      mainFields: ['module', 'browser', 'main']
+    }),
     commonjs(),
     postcss({
       plugins: [],

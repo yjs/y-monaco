@@ -18,4 +18,5 @@ global.innerHeight = 0
 // @ts-ignore
 document.getSelection = () => ({ })
 
-require('../dist/test.js')
+// @ts-ignore
+require('../dist/test.cjs')
