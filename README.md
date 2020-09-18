@@ -1,5 +1,5 @@
 # y-monaco
-> [Monaco](https://microsoft.github.io/monaco-editor/index.html) Editor Binding for [Yjs](https://github.com/y-js/yjs) - [Demo](https://yjs-demos.now.sh/monaco/)
+> [Monaco](https://microsoft.github.io/monaco-editor/index.html) Editor Binding for [Yjs](https://github.com/y-js/yjs) - [Demo](https://demos.yjs.dev/monaco/monaco.html)
 
 This binding maps a Y.Text to the Monaco editor (the editor that power VS Code).
 
