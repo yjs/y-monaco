@@ -10,7 +10,7 @@ class RelativeSelection {
    * @param {Y.RelativePosition} end
    * @param {monaco.SelectionDirection} direction
    */
-  constructor (start, end, direction) {
+  constructor(start, end, direction) {
     this.start = start
     this.end = end
     this.direction = direction
@@ -60,7 +60,7 @@ export class MonacoBinding {
    * @param {Set<monaco.editor.IStandaloneCodeEditor>} [editors]
    * @param {Awareness?} [awareness]
    */
-  constructor (ytext, monacoModel, editors = new Set(), awareness = null) {
+  constructor(ytext, monacoModel, editors = new Set(), awareness = null) {
     this.doc = /** @type {Y.Doc} */ (ytext.doc)
     this.ytext = ytext
     this.monacoModel = monacoModel
@@ -135,18 +135,17 @@ export class MonacoBinding {
           } else if (op.insert !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const range = new monaco.Selection(pos.lineNumber, pos.column, pos.lineNumber, pos.column)
-            monacoModel.pushEditOperations([], [{ range, text: op.insert }], () => null)
+            monacoModel.applyEdits([{ range, text: op.insert }])
             index += op.insert.length
           } else if (op.delete !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const endPos = monacoModel.getPositionAt(index + op.delete)
             const range = new monaco.Selection(pos.lineNumber, pos.column, endPos.lineNumber, endPos.column)
-            monacoModel.pushEditOperations([], [{ range, text: '' }], () => null)
+            monacoModel.applyEdits([{ range, text: '' }])
           } else {
             throw error.unexpectedCase()
           }
         })
-        monacoModel.pushStackElement()
         this._savedSelections.forEach((rsel, editor) => {
           const sel = createMonacoSelectionFromRelativeSelection(editor, ytext, rsel, this.doc)
           if (sel !== null) {
@@ -199,7 +198,7 @@ export class MonacoBinding {
     }
   }
 
-  destroy () {
+  destroy() {
     this._monacoChangeHandler.dispose()
     this.ytext.unobserve(this._ytextObserver)
     this.doc.off('beforeAllTransactions', this._beforeTransaction)
