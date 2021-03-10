@@ -66,6 +66,7 @@ export class MonacoBinding {
     this.monacoModel = monacoModel
     this.editors = editors
     this.mux = createMutex()
+    this.yUndoManager = new Y.UndoManager(ytext)
     /**
      * @type {Map<monaco.editor.IStandaloneCodeEditor, RelativeSelection>}
      */
@@ -135,17 +136,18 @@ export class MonacoBinding {
           } else if (op.insert !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const range = new monaco.Selection(pos.lineNumber, pos.column, pos.lineNumber, pos.column)
-            monacoModel.applyEdits([{ range, text: op.insert }])
+            monacoModel.pushEditOperations([], [{ range, text: op.insert }], () => null)
             index += op.insert.length
           } else if (op.delete !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const endPos = monacoModel.getPositionAt(index + op.delete)
             const range = new monaco.Selection(pos.lineNumber, pos.column, endPos.lineNumber, endPos.column)
-            monacoModel.applyEdits([{ range, text: '' }])
+            monacoModel.pushEditOperations([], [{ range, text: '' }], () => null)
           } else {
             throw error.unexpectedCase()
           }
         })
+        monacoModel.pushStackElement()
         this._savedSelections.forEach((rsel, editor) => {
           const sel = createMonacoSelectionFromRelativeSelection(editor, ytext, rsel, this.doc)
           if (sel !== null) {
@@ -196,6 +198,24 @@ export class MonacoBinding {
       })
       this.awareness = awareness
     }
+
+    
+    editors.forEach(editor => {
+      this.yUndoManager.trackedOrigins.add(this) // track changes performed by this editor binding
+
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z, () => {
+        this.yUndoManager.undo()
+      });
+                
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_Z, () => {
+        this.yUndoManager.redo()
+      });
+      
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Y, () => {
+        this.yUndoManager.redo()
+      });
+    })
+    
   }
 
   destroy () {
