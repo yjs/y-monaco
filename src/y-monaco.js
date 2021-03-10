@@ -198,8 +198,6 @@ export class MonacoBinding {
       })
       this.awareness = awareness
     }
-
-    
     editors.forEach(editor => {
       this.yUndoManager.trackedOrigins.add(this) // track changes performed by this editor binding
 
@@ -215,7 +213,6 @@ export class MonacoBinding {
         this.yUndoManager.redo()
       });
     })
-    
   }
 
   destroy () {
