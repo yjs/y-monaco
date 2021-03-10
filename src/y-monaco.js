@@ -66,7 +66,9 @@ export class MonacoBinding {
     this.monacoModel = monacoModel
     this.editors = editors
     this.mux = createMutex()
-    this.yUndoManager = new Y.UndoManager(ytext)
+    this.yUndoManager = new Y.UndoManager(ytext, {
+      trackedOrigins: new Set([this])
+    })
     /**
      * @type {Map<monaco.editor.IStandaloneCodeEditor, RelativeSelection>}
      */
