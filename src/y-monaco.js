@@ -200,7 +200,6 @@ export class MonacoBinding {
       })
       this.awareness = awareness
     }
-    this.yUndoManager.trackedOrigins.add(this) // track changes performed by this editor binding
     editors.forEach(editor => {
       editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z, () => {
         this.yUndoManager.undo()
