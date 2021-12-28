@@ -100,18 +100,18 @@ export class MonacoBinding {
                 if (anchorAbs.index < headAbs.index) {
                   start = monacoModel.getPositionAt(anchorAbs.index)
                   end = monacoModel.getPositionAt(headAbs.index)
-                  afterContentClassName = 'yRemoteSelectionHead'
+                  afterContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
                   beforeContentClassName = null
                 } else {
                   start = monacoModel.getPositionAt(headAbs.index)
                   end = monacoModel.getPositionAt(anchorAbs.index)
                   afterContentClassName = null
-                  beforeContentClassName = 'yRemoteSelectionHead'
+                  beforeContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
                 }
                 newDecorations.push({
                   range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
                   options: {
-                    className: 'yRemoteSelection',
+                    className: 'yRemoteSelection yRemoteSelection-' + clientID,
                     afterContentClassName,
                     beforeContentClassName
                   }
