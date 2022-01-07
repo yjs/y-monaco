@@ -202,7 +202,7 @@ export class MonacoBinding {
     this._monacoChangeHandler.dispose()
     this.ytext.unobserve(this._ytextObserver)
     this.doc.off('beforeAllTransactions', this._beforeTransaction)
-    if (this.awareness !== null) {
+    if (this.awareness) {
       this.awareness.off('change', this._rerenderDecorations)
     }
   }
