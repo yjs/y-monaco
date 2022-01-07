@@ -156,7 +156,9 @@ export class MonacoBinding {
       this._rerenderDecorations()
     }
     ytext.observe(this._ytextObserver)
-    monacoModel.setValue(ytext.toString())
+    if (monacoModel.getValue() !== ytext.toString()) {
+      monacoModel.setValue(ytext.toString())
+    }
     this._monacoChangeHandler = monacoModel.onDidChangeContent(event => {
       // apply changes from right to left
       this.mux(() => {
