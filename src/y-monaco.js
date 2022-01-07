@@ -1,8 +1,8 @@
 import * as Y from 'yjs'
 import * as monaco from 'monaco-editor'
-import * as error from 'lib0/error.js'
-import { createMutex } from 'lib0/mutex.js'
-import { Awareness } from 'y-protocols/awareness.js' // eslint-disable-line
+import * as error from 'lib0/error'
+import { createMutex } from 'lib0/mutex'
+import { Awareness } from 'y-protocols/awareness' // eslint-disable-line
 
 class RelativeSelection {
   /**
