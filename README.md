@@ -47,6 +47,19 @@ const binding = new MonacoBinding(type, editor.getModel(), new Set([editor]), pr
   <dd>Unregister all event listeners. This is automatically called when the model is disposed.</dd>
 </dl>
 
+## Styling
+
+You can use the following CSS classes to style remote cursor selections:
+
+- `yRemoteSelection`
+- `yRemoteSelectionHead`
+
+See [demo/index.html](demo/index.html) for example styles. Additionally, you can enable per-user styling (e.g.: different colors per user). The recommended approach for this is to listen to `awareness.on("update", () => ...));` and inject custom styles for every available clientId. You can use the following classnames for this:
+
+- `yRemoteSelection-${clientId}`
+- `yRemoteSelectionHead-${clientId`
+
+(where `${clientId}` is the Yjs clientId of the specific user).
 ### License
 
 [The MIT License](./LICENSE) © Kevin Jahns
