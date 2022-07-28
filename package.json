@@ -23,7 +23,8 @@
   "exports": {
     ".": {
       "import": "./src/y-monaco.js",
-      "require": "./dist/y-monaco.cjs"
+      "require": "./dist/y-monaco.cjs",
+      "types": "./types.d.ts"
     },
     "./package.json": "./package.json"
   },
