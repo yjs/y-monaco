@@ -59,8 +59,9 @@ export class MonacoBinding {
    * @param {monaco.editor.ITextModel} monacoModel
    * @param {Set<monaco.editor.IStandaloneCodeEditor>} [editors]
    * @param {Awareness?} [awareness]
+   * @param {string?} [className]
    */
-  constructor (ytext, monacoModel, editors = new Set(), awareness = null) {
+  constructor (ytext, monacoModel, editors = new Set(), awareness = null, className) {
     this.doc = /** @type {Y.Doc} */ (ytext.doc)
     this.ytext = ytext
     this.monacoModel = monacoModel
@@ -95,23 +96,33 @@ export class MonacoBinding {
             if (clientID !== this.doc.clientID && state.selection != null && state.selection.anchor != null && state.selection.head != null) {
               const anchorAbs = Y.createAbsolutePositionFromRelativePosition(state.selection.anchor, this.doc)
               const headAbs = Y.createAbsolutePositionFromRelativePosition(state.selection.head, this.doc)
+              /**
+               * @param {string} prefix
+               */
+              const getClassName = (prefix) => {
+                let result = prefix + ' ' + prefix + '-' + clientID
+                if(className) {
+                  return result + ' ' + className
+                }
+                return result
+              }
               if (anchorAbs !== null && headAbs !== null && anchorAbs.type === ytext && headAbs.type === ytext) {
                 let start, end, afterContentClassName, beforeContentClassName
                 if (anchorAbs.index < headAbs.index) {
                   start = monacoModel.getPositionAt(anchorAbs.index)
                   end = monacoModel.getPositionAt(headAbs.index)
-                  afterContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+                  afterContentClassName = getClassName('yRemoteSelectionHead')
                   beforeContentClassName = null
                 } else {
                   start = monacoModel.getPositionAt(headAbs.index)
                   end = monacoModel.getPositionAt(anchorAbs.index)
                   afterContentClassName = null
-                  beforeContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+                  beforeContentClassName = getClassName('yRemoteSelectionHead')
                 }
                 newDecorations.push({
                   range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
                   options: {
-                    className: 'yRemoteSelection yRemoteSelection-' + clientID,
+                    className: getClassName('yRemoteSelection'),
                     afterContentClassName,
                     beforeContentClassName
                   }
