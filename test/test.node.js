@@ -1,9 +1,13 @@
-const fs = require('fs')
-const path = require('path')
-const { JSDOM } = require('jsdom')
+import fs from 'fs'
+import path from 'path'
+import { JSDOM } from 'jsdom'
+import { fileURLToPath } from 'url'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const documentContent = fs.readFileSync(path.join(__dirname, '../test.html'))
 const { window } = new JSDOM(documentContent)
+
+window.matchMedia = () => ({ matches: false, addEventListener: () => {} })
 
 // @ts-ignore
 global.self = global
@@ -17,6 +21,9 @@ global.document = window.document
 global.innerHeight = 0
 // @ts-ignore
 document.getSelection = () => ({ })
-
 // @ts-ignore
-require('../dist/test.cjs')
+document.queryCommandSupported = () => false
+
+import('../dist/test.js').then(() => {
+  console.log('all done!')
+})

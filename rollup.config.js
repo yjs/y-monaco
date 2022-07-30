@@ -6,6 +6,18 @@ import path from 'path'
 
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, './package.json'), { encoding: 'utf8' }))
 const dependencies = Object.keys(pkg.peerDependencies).concat(Object.keys(pkg.dependencies))
+
+console.log(dependencies)
+
+const aliases = {
+  resolveId (importee) {
+    if (importee === 'yjs') {
+      return `${process.cwd()}/node_modules/yjs/src/index.js`
+    }
+    return null
+  }
+}
+
 export default [{
   input: './src/y-monaco.js',
   output: [{
@@ -19,17 +31,16 @@ export default [{
   input: './test/index.js',
   output: {
     name: 'test',
-    file: 'dist/test.cjs',
-    format: 'cjs',
+    file: 'dist/test.js',
+    format: 'esm',
     sourcemap: true,
     inlineDynamicImports: true
   },
-  external: id => !/^yjs\//.test(id) && id[0] !== '.' && id[0] !== '/',
+  external: id => /^(lib0|isomorphic\.js)\//.test(id) && id[0] !== '.' && id[0] !== '/',
   plugins: [
     // debugResolve,
-    nodeResolve({
-      mainFields: ['module', 'browser', 'main']
-    }),
+    aliases,
+    nodeResolve(),
     postcss({
       plugins: [],
       extract: true
