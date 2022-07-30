@@ -90,6 +90,9 @@ export class MonacoBinding {
         if (awareness && editor.getModel() === monacoModel) {
           // render decorations
           const currentDecorations = this._decorations.get(editor) || []
+          /**
+           * @type {Array<monaco.editor.IModelDeltaDecoration>}
+           */
           const newDecorations = []
           awareness.getStates().forEach((state, clientID) => {
             if (clientID !== this.doc.clientID && state.selection != null && state.selection.anchor != null && state.selection.head != null) {
@@ -126,6 +129,9 @@ export class MonacoBinding {
         }
       })
     }
+    /**
+     * @param {Y.YTextEvent} event
+     */
     this._ytextObserver = event => {
       this.mux(() => {
         let index = 0
@@ -135,8 +141,9 @@ export class MonacoBinding {
           } else if (op.insert !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const range = new monaco.Selection(pos.lineNumber, pos.column, pos.lineNumber, pos.column)
-            monacoModel.applyEdits([{ range, text: op.insert }])
-            index += op.insert.length
+            const insert = /** @type {string} */ (op.insert)
+            monacoModel.applyEdits([{ range, text: insert }])
+            index += insert.length
           } else if (op.delete !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const endPos = monacoModel.getPositionAt(index + op.delete)
