@@ -4,6 +4,10 @@ import * as error from 'lib0/error'
 import { createMutex } from 'lib0/mutex'
 import { Awareness } from 'y-protocols/awareness' // eslint-disable-line
 
+/**
+ * @typedef {(state: Record<string, any>, clientID: number, isHead: boolean) => string} ClassNameGetter
+ */
+
 class RelativeSelection {
   /**
    * @param {Y.RelativePosition} start
@@ -53,15 +57,23 @@ const createMonacoSelectionFromRelativeSelection = (editor, type, relSel, doc) =
   return null
 }
 
+const defaultGetClassName = /** @type {ClassNameGetter}  */ (state, clientID, isHead) => {
+  if (isHead) {
+    return 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+  } else {
+    return 'yRemoteSelection yRemoteSelection-' + clientID
+  }
+}
+
 export class MonacoBinding {
   /**
    * @param {Y.Text} ytext
    * @param {monaco.editor.ITextModel} monacoModel
    * @param {Set<monaco.editor.IStandaloneCodeEditor>} [editors]
    * @param {Awareness?} [awareness]
-   * @param {string?} [className]
+   * @param {ClassNameGetter?} [getClassName]
    */
-  constructor (ytext, monacoModel, editors = new Set(), awareness = null, className) {
+  constructor (ytext, monacoModel, editors = new Set(), awareness = null, getClassName) {
     this.doc = /** @type {Y.Doc} */ (ytext.doc)
     this.ytext = ytext
     this.monacoModel = monacoModel
@@ -96,33 +108,23 @@ export class MonacoBinding {
             if (clientID !== this.doc.clientID && state.selection != null && state.selection.anchor != null && state.selection.head != null) {
               const anchorAbs = Y.createAbsolutePositionFromRelativePosition(state.selection.anchor, this.doc)
               const headAbs = Y.createAbsolutePositionFromRelativePosition(state.selection.head, this.doc)
-              /**
-               * @param {string} prefix
-               */
-              const getClassName = (prefix) => {
-                let result = prefix + ' ' + prefix + '-' + clientID
-                if(className) {
-                  return result + ' ' + className
-                }
-                return result
-              }
               if (anchorAbs !== null && headAbs !== null && anchorAbs.type === ytext && headAbs.type === ytext) {
                 let start, end, afterContentClassName, beforeContentClassName
                 if (anchorAbs.index < headAbs.index) {
                   start = monacoModel.getPositionAt(anchorAbs.index)
                   end = monacoModel.getPositionAt(headAbs.index)
-                  afterContentClassName = getClassName('yRemoteSelectionHead')
+                  afterContentClassName = defaultGetClassName(state, clientID, true)
                   beforeContentClassName = null
                 } else {
                   start = monacoModel.getPositionAt(headAbs.index)
                   end = monacoModel.getPositionAt(anchorAbs.index)
                   afterContentClassName = null
-                  beforeContentClassName = getClassName('yRemoteSelectionHead')
+                  beforeContentClassName = defaultGetClassName(state, clientID, true)
                 }
                 newDecorations.push({
                   range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
                   options: {
-                    className: getClassName('yRemoteSelection'),
+                    className: defaultGetClassName(state, clientID, false),
                     afterContentClassName,
                     beforeContentClassName
                   }
