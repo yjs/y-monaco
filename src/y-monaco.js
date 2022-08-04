@@ -57,7 +57,10 @@ const createMonacoSelectionFromRelativeSelection = (editor, type, relSel, doc) =
   return null
 }
 
-const defaultGetClassName = /** @type {ClassNameGetter}  */ (state, clientID, isHead) => {
+/** 
+ * @type {ClassNameGetter}
+ */
+const defaultGetClassName = (state, clientID, isHead) => {
   if (isHead) {
     return 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
   } else {
@@ -73,7 +76,7 @@ export class MonacoBinding {
    * @param {Awareness?} [awareness]
    * @param {ClassNameGetter?} [getClassName]
    */
-  constructor (ytext, monacoModel, editors = new Set(), awareness = null, getClassName) {
+  constructor (ytext, monacoModel, editors = new Set(), awareness = null, getClassName = defaultGetClassName) {
     this.doc = /** @type {Y.Doc} */ (ytext.doc)
     this.ytext = ytext
     this.monacoModel = monacoModel
@@ -113,18 +116,18 @@ export class MonacoBinding {
                 if (anchorAbs.index < headAbs.index) {
                   start = monacoModel.getPositionAt(anchorAbs.index)
                   end = monacoModel.getPositionAt(headAbs.index)
-                  afterContentClassName = defaultGetClassName(state, clientID, true)
+                  afterContentClassName = getClassName(state, clientID, true)
                   beforeContentClassName = null
                 } else {
                   start = monacoModel.getPositionAt(headAbs.index)
                   end = monacoModel.getPositionAt(anchorAbs.index)
                   afterContentClassName = null
-                  beforeContentClassName = defaultGetClassName(state, clientID, true)
+                  beforeContentClassName = getClassName(state, clientID, true)
                 }
                 newDecorations.push({
                   range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
                   options: {
-                    className: defaultGetClassName(state, clientID, false),
+                    className: getClassName(state, clientID, false),
                     afterContentClassName,
                     beforeContentClassName
                   }
