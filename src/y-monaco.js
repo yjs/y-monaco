@@ -142,13 +142,13 @@ export class MonacoBinding {
             const pos = monacoModel.getPositionAt(index)
             const range = new monaco.Selection(pos.lineNumber, pos.column, pos.lineNumber, pos.column)
             const insert = /** @type {string} */ (op.insert)
-            monacoModel.applyEdits([{ range, text: insert }])
+            monacoModel.applyEdits([{ range, text: insert, forceMoveMarkers: true }])
             index += insert.length
           } else if (op.delete !== undefined) {
             const pos = monacoModel.getPositionAt(index)
             const endPos = monacoModel.getPositionAt(index + op.delete)
             const range = new monaco.Selection(pos.lineNumber, pos.column, endPos.lineNumber, endPos.column)
-            monacoModel.applyEdits([{ range, text: '' }])
+            monacoModel.applyEdits([{ range, text: '', forceMoveMarkers: true }])
           } else {
             throw error.unexpectedCase()
           }
