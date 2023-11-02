@@ -180,7 +180,7 @@ export class MonacoBinding {
         }, this)
       })
     })
-    monacoModel.onWillDispose(() => {
+    this._monacoDisposeHandler = monacoModel.onWillDispose(() => {
       this.destroy()
     })
     if (awareness) {
@@ -212,6 +212,7 @@ export class MonacoBinding {
 
   destroy () {
     this._monacoChangeHandler.dispose()
+    this._monacoDisposeHandler.dispose()
     this.ytext.unobserve(this._ytextObserver)
     this.doc.off('beforeAllTransactions', this._beforeTransaction)
     if (this.awareness) {
