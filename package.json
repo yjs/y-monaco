@@ -1,6 +1,6 @@
 {
   "name": "y-monaco",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Monaco editor bindings for Yjs",
   "main": "./src/y-monaco.js",
   "types": "./dist/src/y-monaco.d.ts",
