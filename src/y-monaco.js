@@ -4,6 +4,10 @@ import * as error from 'lib0/error'
 import { createMutex } from 'lib0/mutex'
 import { Awareness } from 'y-protocols/awareness' // eslint-disable-line
 
+/**
+ * @typedef {(state: Record<string, any>, clientID: number, isHead: boolean) => string} ClassNameGetter
+ */
+
 class RelativeSelection {
   /**
    * @param {Y.RelativePosition} start
@@ -53,14 +57,26 @@ const createMonacoSelectionFromRelativeSelection = (editor, type, relSel, doc) =
   return null
 }
 
+/** 
+ * @type {ClassNameGetter}
+ */
+const defaultGetClassName = (state, clientID, isHead) => {
+  if (isHead) {
+    return 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+  } else {
+    return 'yRemoteSelection yRemoteSelection-' + clientID
+  }
+}
+
 export class MonacoBinding {
   /**
    * @param {Y.Text} ytext
    * @param {monaco.editor.ITextModel} monacoModel
    * @param {Set<monaco.editor.IStandaloneCodeEditor>} [editors]
    * @param {Awareness?} [awareness]
+   * @param {ClassNameGetter?} [getClassName]
    */
-  constructor (ytext, monacoModel, editors = new Set(), awareness = null) {
+  constructor (ytext, monacoModel, editors = new Set(), awareness = null, getClassName = defaultGetClassName) {
     this.doc = /** @type {Y.Doc} */ (ytext.doc)
     this.ytext = ytext
     this.monacoModel = monacoModel
@@ -103,18 +119,18 @@ export class MonacoBinding {
                 if (anchorAbs.index < headAbs.index) {
                   start = monacoModel.getPositionAt(anchorAbs.index)
                   end = monacoModel.getPositionAt(headAbs.index)
-                  afterContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+                  afterContentClassName = getClassName(state, clientID, true)
                   beforeContentClassName = null
                 } else {
                   start = monacoModel.getPositionAt(headAbs.index)
                   end = monacoModel.getPositionAt(anchorAbs.index)
                   afterContentClassName = null
-                  beforeContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+                  beforeContentClassName = getClassName(state, clientID, true)
                 }
                 newDecorations.push({
                   range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
                   options: {
-                    className: 'yRemoteSelection yRemoteSelection-' + clientID,
+                    className: getClassName(state, clientID, false),
                     afterContentClassName,
                     beforeContentClassName
                   }
