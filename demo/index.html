@@ -12,6 +12,9 @@
         .yRemoteSelection {
             background-color: rgb(250, 129, 0, .5)
         }
+        .yRemoteSelection-secondary {
+            background-color: rgb(250, 129, 0, .3)
+        }
         .yRemoteSelectionHead {
             position: absolute;
             border-left: orange solid 2px;
@@ -20,6 +23,11 @@
             height: 100%;
             box-sizing: border-box;
         }
+        .yRemoteSelectionHead-secondary {
+            border-left: rgba(255, 166, 0, 0.7) solid 2px;
+            border-top: rgba(255, 166, 0, 0.7) solid 2px;
+            border-bottom: rgba(255, 166, 0, 0.7) solid 2px;
+        }
         .yRemoteSelectionHead::after {
             position: absolute;
             content: ' ';
@@ -27,6 +35,9 @@
             border-radius: 4px;
             left: -4px;
             top: -5px;
+        }
+        .yRemoteSelectionHead-secondary::after {
+            border: 3px solid rgba(255, 166, 0, 0.7);
         }
     </style>
 </head>
