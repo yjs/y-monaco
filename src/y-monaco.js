@@ -10,7 +10,7 @@ class RelativeSelection {
    * @param {Y.RelativePosition} end
    * @param {monaco.SelectionDirection} direction
    */
-  constructor(start, end, direction) {
+  constructor (start, end, direction) {
     this.start = start
     this.end = end
     this.direction = direction
@@ -22,7 +22,7 @@ class YTextSelection {
    * @param {Y.RelativePosition} anchor
    * @param {Y.RelativePosition} head
    */
-  constructor(anchor, head) {
+  constructor (anchor, head) {
     this.anchor = anchor
     this.head = head
   }
@@ -71,7 +71,7 @@ export class MonacoBinding {
    * @param {Set<monaco.editor.IStandaloneCodeEditor>} [editors]
    * @param {Awareness?} [awareness]
    */
-  constructor(ytext, monacoModel, editors = new Set(), awareness = null) {
+  constructor (ytext, monacoModel, editors = new Set(), awareness = null) {
     this.doc = /** @type {Y.Doc} */ (ytext.doc)
     this.ytext = ytext
     this.monacoModel = monacoModel
@@ -233,7 +233,7 @@ export class MonacoBinding {
     }
   }
 
-  destroy() {
+  destroy () {
     this._monacoChangeHandler.dispose()
     this._monacoDisposeHandler.dispose()
     this.ytext.unobserve(this._ytextObserver)
