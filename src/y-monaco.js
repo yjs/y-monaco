@@ -17,6 +17,17 @@ class RelativeSelection {
   }
 }
 
+class YTextSelection {
+  /**
+   * @param {Y.RelativePosition} anchor
+   * @param {Y.RelativePosition} head
+   */
+  constructor (anchor, head) {
+    this.anchor = anchor
+    this.head = head
+  }
+}
+
 /**
  * @param {monaco.editor.IStandaloneCodeEditor} editor
  * @param {monaco.editor.ITextModel} monacoModel
@@ -95,31 +106,36 @@ export class MonacoBinding {
            */
           const newDecorations = []
           awareness.getStates().forEach((state, clientID) => {
-            if (clientID !== this.doc.clientID && state.selection != null && state.selection.anchor != null && state.selection.head != null) {
-              const anchorAbs = Y.createAbsolutePositionFromRelativePosition(state.selection.anchor, this.doc)
-              const headAbs = Y.createAbsolutePositionFromRelativePosition(state.selection.head, this.doc)
-              if (anchorAbs !== null && headAbs !== null && anchorAbs.type === ytext && headAbs.type === ytext) {
-                let start, end, afterContentClassName, beforeContentClassName
-                if (anchorAbs.index < headAbs.index) {
-                  start = monacoModel.getPositionAt(anchorAbs.index)
-                  end = monacoModel.getPositionAt(headAbs.index)
-                  afterContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
-                  beforeContentClassName = null
-                } else {
-                  start = monacoModel.getPositionAt(headAbs.index)
-                  end = monacoModel.getPositionAt(anchorAbs.index)
-                  afterContentClassName = null
-                  beforeContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+            if (clientID !== this.doc.clientID && state.selections != null) {
+              state.selections.forEach((selection) => {
+                if (selection.anchor == null || selection.head == null) {
+                  return
                 }
-                newDecorations.push({
-                  range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
-                  options: {
-                    className: 'yRemoteSelection yRemoteSelection-' + clientID,
-                    afterContentClassName,
-                    beforeContentClassName
+                const anchorAbs = Y.createAbsolutePositionFromRelativePosition(selection.anchor, this.doc)
+                const headAbs = Y.createAbsolutePositionFromRelativePosition(selection.head, this.doc)
+                if (anchorAbs !== null && headAbs !== null && anchorAbs.type === ytext && headAbs.type === ytext) {
+                  let start, end, afterContentClassName, beforeContentClassName
+                  if (anchorAbs.index < headAbs.index) {
+                    start = monacoModel.getPositionAt(anchorAbs.index)
+                    end = monacoModel.getPositionAt(headAbs.index)
+                    afterContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
+                    beforeContentClassName = null
+                  } else {
+                    start = monacoModel.getPositionAt(headAbs.index)
+                    end = monacoModel.getPositionAt(anchorAbs.index)
+                    afterContentClassName = null
+                    beforeContentClassName = 'yRemoteSelectionHead yRemoteSelectionHead-' + clientID
                   }
-                })
-              }
+                  newDecorations.push({
+                    range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
+                    options: {
+                      className: 'yRemoteSelection yRemoteSelection-' + clientID,
+                      afterContentClassName,
+                      beforeContentClassName
+                    }
+                  })
+                }
+              })
             }
           })
           this._decorations.set(editor, editor.deltaDecorations(currentDecorations, newDecorations))
@@ -187,21 +203,28 @@ export class MonacoBinding {
       editors.forEach(editor => {
         editor.onDidChangeCursorSelection(() => {
           if (editor.getModel() === monacoModel) {
-            const sel = editor.getSelection()
-            if (sel === null) {
+            const selections = editor.getSelections()
+            if (selections === null) {
               return
             }
-            let anchor = monacoModel.getOffsetAt(sel.getStartPosition())
-            let head = monacoModel.getOffsetAt(sel.getEndPosition())
-            if (sel.getDirection() === monaco.SelectionDirection.RTL) {
-              const tmp = anchor
-              anchor = head
-              head = tmp
-            }
-            awareness.setLocalStateField('selection', {
-              anchor: Y.createRelativePositionFromTypeIndex(ytext, anchor),
-              head: Y.createRelativePositionFromTypeIndex(ytext, head)
+            /**
+             * @type {Array<YTextSelection>}
+             */
+            const ytextSelections = []
+            selections.forEach(sel => {
+              let anchor = monacoModel.getOffsetAt(sel.getStartPosition())
+              let head = monacoModel.getOffsetAt(sel.getEndPosition())
+              if (sel.getDirection() === monaco.SelectionDirection.RTL) {
+                const tmp = anchor
+                anchor = head
+                head = tmp
+              }
+              ytextSelections.push({
+                anchor: Y.createRelativePositionFromTypeIndex(ytext, anchor),
+                head: Y.createRelativePositionFromTypeIndex(ytext, head)
+              })
             })
+            awareness.setLocalStateField('selections', ytextSelections)
           }
         })
         awareness.on('change', this._rerenderDecorations)
