@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 import * as error from 'lib0/error'
 import { createMutex } from 'lib0/mutex'
 import { Awareness } from 'y-protocols/awareness' // eslint-disable-line
