@@ -20,6 +20,8 @@ global.document = window.document
 // @ts-ignore
 global.innerHeight = 0
 // @ts-ignore
+global.UIEvent = window.UIEvent
+// @ts-ignore
 document.getSelection = () => ({ })
 // @ts-ignore
 document.queryCommandSupported = () => false
