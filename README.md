@@ -57,9 +57,15 @@ You can use the following CSS classes to style remote cursor selections:
 See [demo/index.html](demo/index.html) for example styles. Additionally, you can enable per-user styling (e.g.: different colors per user). The recommended approach for this is to listen to `awareness.on("update", () => ...));` and inject custom styles for every available clientId. You can use the following classnames for this:
 
 - `yRemoteSelection-${clientId}`
-- `yRemoteSelectionHead-${clientId`
+- `yRemoteSelectionHead-${clientId}`
 
 (where `${clientId}` is the Yjs clientId of the specific user).
+
+For multi-selection styling, use these classnames for the primary and secondary selections:
+
+- `yRemoteSelection-primary`, `yRemoteSelectionHead-primary`
+- `yRemoteSelection-secondary`, `yRemoteSelectionHead-secondary`
+
 ### License
 
 [The MIT License](./LICENSE) © Kevin Jahns
