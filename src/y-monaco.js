@@ -183,26 +183,40 @@ export class MonacoBinding {
     this._monacoDisposeHandler = monacoModel.onWillDispose(() => {
       this.destroy()
     })
+    /**
+     * @param {monaco.editor.IStandaloneCodeEditor} editor
+     */
+    this._monacoSelectionChangeHandler = (editor) => {
+      if(!awareness) return
+      const sel = editor.getSelection()
+      if (sel === null) {
+        return
+      }
+      let anchor = monacoModel.getOffsetAt(sel.getStartPosition())
+      let head = monacoModel.getOffsetAt(sel.getEndPosition())
+      if (sel.getDirection() === monaco.SelectionDirection.RTL) {
+        const tmp = anchor
+        anchor = head
+        head = tmp
+      }
+      awareness.setLocalStateField('selection', {
+        anchor: Y.createRelativePositionFromTypeIndex(ytext, anchor),
+        head: Y.createRelativePositionFromTypeIndex(ytext, head)
+      })
+    }
     if (awareness) {
       editors.forEach(editor => {
-        editor.onDidChangeCursorSelection(() => {
-          if (editor.getModel() === monacoModel) {
-            const sel = editor.getSelection()
-            if (sel === null) {
-              return
-            }
-            let anchor = monacoModel.getOffsetAt(sel.getStartPosition())
-            let head = monacoModel.getOffsetAt(sel.getEndPosition())
-            if (sel.getDirection() === monaco.SelectionDirection.RTL) {
-              const tmp = anchor
-              anchor = head
-              head = tmp
-            }
-            awareness.setLocalStateField('selection', {
-              anchor: Y.createRelativePositionFromTypeIndex(ytext, anchor),
-              head: Y.createRelativePositionFromTypeIndex(ytext, head)
-            })
-          }
+        editor.onDidChangeCursorSelection((e) => {
+          if (editor.getModel() !== monacoModel) return
+          // Workaround for the wrong event order bug in monaco-editor, ref: https://github.com/microsoft/monaco-editor/issues/2774
+          if ( 
+            e.reason === /** @type {monaco.editor.CursorChangeReason.Undo} */ (5) || 
+            e.reason === /** @type {monaco.editor.CursorChangeReason.Redo} */ (6) 
+          ) {
+            setTimeout(() => this._monacoSelectionChangeHandler(editor))
+          } else {
+            this._monacoSelectionChangeHandler(editor)
+          } 
         })
         awareness.on('change', this._rerenderDecorations)
       })
