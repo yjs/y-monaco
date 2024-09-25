@@ -60,6 +60,9 @@ See [demo/index.html](demo/index.html) for example styles. Additionally, you can
 - `yRemoteSelectionHead-${clientId`
 
 (where `${clientId}` is the Yjs clientId of the specific user).
+
+Alternatively you can specify a custom class name to add to the decorators.
+
 ### License
 
 [The MIT License](./LICENSE) © Kevin Jahns
