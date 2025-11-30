@@ -209,14 +209,27 @@ export class MonacoBinding {
       this.awareness = awareness
     }
   }
+/**
+ * Destroy the MonacoBinding and clean up all listeners.
+ *
+ * @param {boolean} [skipYjsUnobserve=false] - When true, skips calling `ytext.unobserve`
+ * to avoid harmless Yjs warnings like:
+ * `[yjs] Tried to remove event handler that doesn't exist.`
+ */
+destroy ( skipYjsUnobserve = false) {
+  // skipYjsUnobserve will skip Yjs unobserve cause it can through error if y-text is already unobserved
+  this._monacoChangeHandler.dispose() 
+  this._monacoDisposeHandler.dispose() 
 
-  destroy () {
-    this._monacoChangeHandler.dispose()
-    this._monacoDisposeHandler.dispose()
-    this.ytext.unobserve(this._ytextObserver)
-    this.doc.off('beforeAllTransactions', this._beforeTransaction)
-    if (this.awareness) {
-      this.awareness.off('change', this._rerenderDecorations)
-    }
+  // optionally skip this part to avoid Yjs warning
+  if (!skipYjsUnobserve) {
+    try { this.ytext.unobserve(this._ytextObserver) } catch {}
   }
+
+  this.doc.off('beforeAllTransactions', this._beforeTransaction) 
+
+  if (this.awareness) {
+    this.awareness.off('change', this._rerenderDecorations) 
+  }
+}
 }
