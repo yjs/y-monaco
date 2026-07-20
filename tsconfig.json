@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es2018",
-    "lib": ["es2018", "dom"],                             /* Specify library files to be included in the compilation. */
+    "target": "es6",
+    "lib": ["es6", "dom"],                             /* Specify library files to be included in the compilation. */
     "skipLibCheck": true,
     "allowJs": true,                       /* Allow javascript files to be compiled. */
     "checkJs": true,                       /* Report errors in .js files. */
@@ -37,7 +37,8 @@
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
 
     /* Module Resolution Options */
-    "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "module": "node16",
+    "moduleResolution": "node16",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
       "yjs": ["./src/index.js"]
