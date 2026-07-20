@@ -47,7 +47,7 @@
     "lib0": "^0.2.43"
   },
   "peerDependencies": {
-    "monaco-editor": ">=0.20.0",
+    "monaco-editor": "^0.56.0",
     "yjs": "^13.3.1"
   },
   "devDependencies": {
@@ -59,7 +59,7 @@
     "file-loader": "^6.2.0",
     "jsdom": "^15.2.1",
     "live-server": "^1.2.1",
-    "monaco-editor": "^0.50.0",
+    "monaco-editor": "0.56.0",
     "rollup": "^2.63.0",
     "rollup-plugin-postcss": "^4.0.2",
     "standard": "^14.3.4",
